@@ -67,16 +67,56 @@ npm run dev
 
 *O servidor iniciará na porta **3000**.*
 
-## 🛣️ Endpoints Principais
+## 📚 Documentação da API
 
-| Método | Rota | Descrição | Auth |
-| :--- | :--- | :--- | :--- |
-| `POST` | `/login` | Autentica um atendente e retorna Token. | ❌ |
-| `GET` | `/veiculos` | Lista toda a frota. | ✅ |
-| `POST` | `/veiculos` | Cadastra um novo veículo. | ✅ |
-| `POST` | `/alugueis` | Realiza a locação de um veículo. | ✅ |
-| `PUT` | `/alugueis/devolucao/:id` | Registra a devolução e libera o carro. | ✅ |
-| `GET` | `/clientes` | Lista clientes cadastrados. | ✅ |
+### 🔐 Autenticação
+
+| Método | Rota | Descrição | Auth | Body (JSON) |
+| :--- | :--- | :--- | :--- | :--- |
+| `POST` | `/login` | Realiza login e retorna Token JWT. | ❌ | `{ "email": "...", "senha": "..." }` |
+
+### 🧑‍💼 Atendentes
+
+| Método | Rota | Descrição | Auth | Body (JSON) |
+| :--- | :--- | :--- | :--- | :--- |
+| `GET` | `/atendentes` | Lista todos os atendentes (ID, Nome, Email). | ❌ | - |
+| `POST` | `/atendentes` | Cadastra novo atendente. | ❌ | `{ "nome": "...", "email": "...", "senha": "...", "perguntaSeguranca": "...", "respostaSeguranca": "..." }` |
+| `PUT` | `/atendentes/alterar-senha` | Altera senha do usuário logado. | ✅ | `{ "senhaAtual": "...", "novaSenha": "..." }` |
+| `POST` | `/atendentes/recuperar-senha` | Redefine senha via pergunta de segurança. | ❌ | `{ "email": "...", "resposta": "...", "novaSenha": "..." }` |
+
+### 🚗 Veículos
+
+| Método | Rota | Descrição | Auth | Body (JSON) |
+| :--- | :--- | :--- | :--- | :--- |
+| `GET` | `/veiculos` | Lista frota ativa (exclui deletados). | ✅ | - |
+| `POST` | `/veiculos` | Cadastra novo veículo. | ✅ | `{ "placa": "ABC1234", "modelo": "...", "cor": "...", "ano": 2023, "status": "DISPONIVEL" }` |
+| `PUT` | `/veiculos/:id` | Atualiza dados do veículo. | ✅ | `{ "placa": "...", "modelo": "...", ... }` |
+| `DELETE` | `/veiculos/:id` | Remove veículo (Soft Delete). | ✅ | - |
+
+### 👥 Clientes
+
+| Método | Rota | Descrição | Auth | Body (JSON) |
+| :--- | :--- | :--- | :--- | :--- |
+| `GET` | `/clientes` | Lista todos os clientes. | ✅ | - |
+| `POST` | `/clientes` | Cadastra novo cliente. | ✅ | `{ "nome": "...", "cpf": "000.000.000-00", "email": "...", "telefone": "...", "endereco": "..." }` |
+| `PUT` | `/clientes/:id` | Atualiza dados do cliente. | ✅ | `{ "nome": "...", ... }` |
+| `DELETE` | `/clientes/:id` | Remove cliente (se não tiver aluguéis). | ✅ | - |
+
+### 🔑 Aluguéis
+
+| Método | Rota | Descrição | Auth | Body (JSON) |
+| :--- | :--- | :--- | :--- | :--- |
+| `GET` | `/alugueis` | Lista histórico de locações. | ✅ | - |
+| `POST` | `/alugueis` | Registra nova locação. | ✅ | `{ "clienteId": 1, "veiculoId": 1 }` |
+| `PUT` | `/alugueis/devolucao/:id` | Finaliza locação (Devolução). | ✅ | - |
+| `DELETE` | `/alugueis/:id` | Remove registro de aluguel. | ✅ | - |
+
+### ⚙️ Sistema
+
+| Método | Rota | Descrição | Auth | Body (JSON) |
+| :--- | :--- | :--- | :--- | :--- |
+| `GET` | `/sistema/backup` | Baixa backup completo (JSON). | ✅ | - |
+| `POST` | `/sistema/restore` | Restaura banco de dados via JSON. | ✅ | `{ "atendentes": [...], "clientes": [...], ... }` |
 
 ---
 
