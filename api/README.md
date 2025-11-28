@@ -54,13 +54,12 @@ Gere as tabelas no banco de dados MySQL:
 
 ```bash
 npx prisma migrate dev --name init
-``` prisma migrate dev --name init
+```
+
 ### 4. Executando o Servidor
 
 Para rodar em modo de desenvolvimento (com hot-reload):
 
-```bash
-npm run dev
 ```bash
 npm run dev
 ```
@@ -117,6 +116,43 @@ npm run dev
 | :--- | :--- | :--- | :--- | :--- |
 | `GET` | `/sistema/backup` | Baixa backup completo (JSON). | ✅ | - |
 | `POST` | `/sistema/restore` | Restaura banco de dados via JSON. | ✅ | `{ "atendentes": [...], "clientes": [...], ... }` |
+
+## 🧪 Testes com Insomnia / Postman
+
+Para facilitar os testes, configure uma variável de ambiente no seu cliente HTTP (Insomnia/Postman) chamada `base_url` com o valor `http://localhost:3000`.
+
+### Lista de Endpoints (Copiar e Colar)
+
+**Autenticação**
+- `POST {{base_url}}/login`
+
+**Atendentes**
+- `GET {{base_url}}/atendentes`
+- `POST {{base_url}}/atendentes`
+- `PUT {{base_url}}/atendentes/alterar-senha`
+- `POST {{base_url}}/atendentes/recuperar-senha`
+
+**Veículos**
+- `GET {{base_url}}/veiculos`
+- `POST {{base_url}}/veiculos`
+- `PUT {{base_url}}/veiculos/1` (Substitua '1' pelo ID desejado)
+- `DELETE {{base_url}}/veiculos/1`
+
+**Clientes**
+- `GET {{base_url}}/clientes`
+- `POST {{base_url}}/clientes`
+- `PUT {{base_url}}/clientes/1`
+- `DELETE {{base_url}}/clientes/1`
+
+**Aluguéis**
+- `GET {{base_url}}/alugueis`
+- `POST {{base_url}}/alugueis`
+- `PUT {{base_url}}/alugueis/devolucao/1`
+- `DELETE {{base_url}}/alugueis/1`
+
+**Sistema**
+- `GET {{base_url}}/sistema/backup`
+- `POST {{base_url}}/sistema/restore`
 
 ---
 
