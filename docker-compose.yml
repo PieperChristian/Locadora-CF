@@ -1,0 +1,63 @@
+services:
+  # 1. Banco de Dados
+  db:
+    image: mysql:8.0
+    container_name: locadora_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: locadoracf
+    ports:
+      - "3307:3306" # Porta externa 3307 para não conflitar com seu MySQL local
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # 2. API Backend
+  api:
+    build: ./api
+    container_name: locadora_api
+    ports:
+      - "3000:3000"
+    environment:
+      # Conecta no serviço 'db' interno, porta 3306
+      DATABASE_URL: "mysql://root:root@db:3306/locadoracf"
+      JWT_KEY: "SuaChaveSecretaDocker"
+      MAILTRAP_USER: "${MAILTRAP_USER}" # Pega do seu .env local se existir
+      MAILTRAP_PASS: "${MAILTRAP_PASS}"
+    depends_on:
+      db:
+        condition: service_healthy
+    # Comando: Roda migrations e depois sobe o servidor
+    command: sh -c "npx prisma migrate deploy && npm run dev"
+
+  # 3. Prisma Studio (Visualizador do Banco)
+  studio:
+    build: ./api
+    container_name: locadora_studio
+    ports:
+      - "5555:5555"
+    environment:
+      DATABASE_URL: "mysql://root:root@db:3306/locadoracf"
+    depends_on:
+      - api
+    command: npx prisma studio --hostname 0.0.0.0
+
+  # 4. Cliente Python (CLI)
+  sistema:
+    build: ./sistema
+    container_name: locadora_cli
+    environment:
+      # Aponta para o serviço 'api' na rede interna do Docker
+      API_URL: "http://api:3000"
+    stdin_open: true # Permite interatividade (input)
+    tty: true        # Simula terminal
+    depends_on:
+      - api
+
+volumes:
+  mysql_data:

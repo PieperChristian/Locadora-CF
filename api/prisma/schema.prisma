@@ -1,0 +1,83 @@
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Cliente {
+  id        Int       @id @default(autoincrement())
+  nome      String    @db.VarChar(60)
+  cpf       String    @unique @db.VarChar(14)
+  email     String    @db.VarChar(100)
+  telefone  String    @db.VarChar(20)
+  endereco  String    @db.VarChar(255)
+  alugueis  Aluguel[]
+
+  @@map("clientes")
+}
+
+model Veiculo {
+  id        Int           @id @default(autoincrement())
+  placa     String        @unique @db.VarChar(8)
+  modelo    String        @db.VarChar(50)
+  cor       String        @db.VarChar(30)
+  ano       Int           @db.SmallInt
+  status    StatusVeiculo @default(DISPONIVEL)
+  alugueis  Aluguel[]
+  
+  // === NOVO: Soft Delete ===
+  deleted   Boolean       @default(false)
+  deletedAt DateTime?
+
+  @@map("veiculos")
+}
+
+model Atendente {
+  id                Int       @id @default(autoincrement())
+  nome              String    @db.VarChar(60)
+  email             String    @unique @db.VarChar(100)
+  senha             String    @db.VarChar(60)
+  alugueis          Aluguel[]
+  logs              Log[]
+
+  // === NOVO: Segurança Avançada ===
+  tentativasLogin   Int       @default(0)
+  bloqueadoAte      DateTime?
+  perguntaSeguranca String?   @db.VarChar(100)
+  respostaSeguranca String?   @db.VarChar(60) // Será hash
+
+  @@map("atendentes")
+}
+model Aluguel {
+  id                Int       @id @default(autoincrement())
+  cliente           Cliente   @relation(fields: [clienteId], references: [id])
+  clienteId         Int
+  veiculo           Veiculo   @relation(fields: [veiculoId], references: [id])
+  veiculoId         Int
+  atendente         Atendente @relation(fields: [atendenteId], references: [id])
+  atendenteId       Int
+  dataHoraRetirada  DateTime  @default(now())
+  dataHoraDevolucao DateTime? 
+
+  @@map("alugueis")
+}
+
+model Log {
+  id          Int       @id @default(autoincrement())
+  atendente   Atendente @relation(fields: [atendenteId], references: [id])
+  atendenteId Int
+  atividade   String    @db.VarChar(255)
+  data        DateTime  @default(now())
+
+  @@map("logs")
+}
+
+enum StatusVeiculo {
+  DISPONIVEL
+  ALUGADO
+  EM_REPARO
+}
