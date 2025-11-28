@@ -116,6 +116,7 @@ npm run dev
 | :--- | :--- | :--- | :--- | :--- |
 | `GET` | `/sistema/backup` | Baixa backup completo (JSON). | ✅ | - |
 | `POST` | `/sistema/restore` | Restaura banco de dados via JSON. | ✅ | `{ "atendentes": [...], "clientes": [...], ... }` |
+| `GET` | `/sistema/logs` | Lista os últimos 50 logs de auditoria. | ✅ | - |
 
 ## 🧪 Testes com Insomnia / Postman
 
@@ -153,6 +154,7 @@ Para facilitar os testes, configure uma variável de ambiente no seu cliente HTT
 **Sistema**
 - `GET {{base_url}}/sistema/backup`
 - `POST {{base_url}}/sistema/restore`
+- `GET {{base_url}}/sistema/logs`
 
 ---
 
