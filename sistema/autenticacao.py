@@ -11,10 +11,7 @@ import funcoes.sessao as sessao
 console = Console()
 
 def realizar_login():
-    """
-    Exibe a tela de login e realiza a autenticação na API.
-    Retorna True se sucesso, False se falha/cancelamento.
-    """
+
     while True:
         titulo("Autenticação do Sistema")
         
@@ -26,17 +23,11 @@ def realizar_login():
             console.print("[red]Saindo...[/]")
             sys.exit()
             
-        # === MUDANÇA DE UX: Máscara com Asterisco ===
-        # 1. Exibimos o texto "Senha: " com a formatação do Rich, sem pular linha (end="")
         console.print("[bold cyan]Senha[/]: ", end="")
         
-        # 2. Usamos o pwinput para capturar a senha mostrando "*"
-        # O prompt fica vazio "" pois já imprimimos o label acima
         senha = pwinput.pwinput(prompt="", mask="*")
         
-        # O pwinput pode deixar o cursor na mesma linha, damos um print vazio para pular
         print() 
-        # ============================================
 
         with console.status("[bold green]Autenticando na API...[/]", spinner="dots"):
             try:

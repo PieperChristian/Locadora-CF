@@ -5,11 +5,8 @@ import { verificaToken } from './verificaToken.js'
 const prisma = new PrismaClient()
 const router = Router()
 
-// Apenas usuários logados podem fazer backup/restore
 router.use(verificaToken)
 
-// === BACKUP (GET) ===
-// Retorna todos os dados do banco em um JSON estruturado
 router.get("/backup", async (req, res) => {
     try {
         const backup = {
@@ -25,8 +22,6 @@ router.get("/backup", async (req, res) => {
     }
 })
 
-// === RESTORE (POST) ===
-// Recebe o JSON e restaura os dados (CUIDADO: Limpa o banco antes!)
 router.post("/restore", async (req, res) => {
     const dados = req.body
 

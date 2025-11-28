@@ -13,7 +13,6 @@ def realizar_aluguel():
     try:
         console.print("[italic]Informe os códigos para vincular:[/]\n")
         
-        # Input validado como Inteiro
         cliente_id = IntPrompt.ask("ID do Cliente")
         veiculo_id = IntPrompt.ask("ID do Veículo")
 
@@ -31,7 +30,6 @@ def realizar_aluguel():
         
         if resposta.status_code == 201:
             dados = resposta.json()
-            # Uso de .get para evitar crash se a API mudar resposta
             veiculo_placa = dados.get('veiculo', {}).get('placa', '---')
             aluguel_id = dados.get('aluguel', {}).get('id', '---')
             
@@ -112,15 +110,12 @@ def listar_alugueis():
         tabela.add_column("Status", justify="center")
 
         for a in alugueis:
-            # === BLINDAGEM DE DADOS ===
-            # Se a API não mandar o objeto cliente, usamos "Desconhecido" em vez de quebrar
             cliente_obj = a.get("cliente") or {}
             veiculo_obj = a.get("veiculo") or {}
             
             cliente_nome = cliente_obj.get("nome", "[red]Cliente Removido[/]")
             veiculo_str = f"{veiculo_obj.get('modelo', '?')} ({veiculo_obj.get('placa', '?')})"
             
-            # Formatação de Data Segura
             raw_data = a.get("dataHoraRetirada", "")
             retirada = raw_data.split("T")[0] if "T" in raw_data else raw_data
             

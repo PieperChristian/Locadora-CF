@@ -6,10 +6,8 @@ import { verificaToken } from './verificaToken.js'
 const prisma = new PrismaClient()
 const router = Router()
 
-// Aplica o middleware de segurança em TODAS as rotas de clientes
 router.use(verificaToken)
 
-// Schema de Validação
 const clienteSchema = z.object({
     nome: z.string().min(3, { message: "Nome deve ter no mínimo 3 caracteres" }),
     cpf: z.string().length(14, { message: "CPF deve ter 14 caracteres (000.000.000-00)" }),
@@ -18,7 +16,6 @@ const clienteSchema = z.object({
     endereco: z.string().min(5, { message: "Endereço deve ter no mínimo 5 caracteres" })
 })
 
-// === LISTAGEM (R) ===
 router.get("/", async (req, res) => {
     try {
         const clientes = await prisma.cliente.findMany({
@@ -30,7 +27,6 @@ router.get("/", async (req, res) => {
     }
 })
 
-// === INCLUSÃO (C) ===
 router.post("/", async (req, res) => {
     const valida = clienteSchema.safeParse(req.body)
     if (!valida.success) {
@@ -66,7 +62,6 @@ router.post("/", async (req, res) => {
     }
 })
 
-// === ALTERAÇÃO (U) ===
 router.put("/:id", async (req, res) => {
     const { id } = req.params
 
@@ -87,7 +82,6 @@ router.put("/:id", async (req, res) => {
     }
 })
 
-// === EXCLUSÃO (D) ===
 router.delete("/:id", async (req, res) => {
     const { id } = req.params
 

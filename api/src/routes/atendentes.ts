@@ -60,9 +60,6 @@ function validaSenha(senha: string) {
     return mensa
 }
 
-// === ROTAS ===
-
-// LISTAR ATENDENTES (GET /)
 router.get("/", async (req, res) => {
     try {
         const atendentes = await prisma.atendente.findMany({
@@ -74,7 +71,6 @@ router.get("/", async (req, res) => {
     }
 })
 
-// CRIAR ATENDENTE (POST /)
 router.post("/", async (req, res) => {
     const valida = atendenteSchema.safeParse(req.body)
     if (!valida.success) {
@@ -99,9 +95,9 @@ router.post("/", async (req, res) => {
         }
 
         const salt = bcrypt.genSaltSync(12)
-        // Hash da Senha
+
         const hashSenha = bcrypt.hashSync(senha, salt)
-        // Hash da Resposta Secreta (Normalizada para minúsculo para facilitar a validação depois)
+
         const hashResposta = bcrypt.hashSync(respostaSeguranca.toLowerCase(), salt)
 
         const atendente = await prisma.atendente.create({
@@ -120,7 +116,6 @@ router.post("/", async (req, res) => {
     }
 })
 
-// ALTERAR SENHA (PUT /alterar-senha) - Protegido por Token
 router.put("/alterar-senha", verificaToken, async (req, res) => {
     const valida = trocaSenhaSchema.safeParse(req.body)
     if (!valida.success) {
@@ -138,13 +133,11 @@ router.put("/alterar-senha", verificaToken, async (req, res) => {
             return
         }
 
-        // Valida Senha Atual
         if (!bcrypt.compareSync(senhaAtual, atendente.senha)) {
             res.status(400).json({ erro: "A senha atual está incorreta" })
             return
         }
 
-        // Valida Força da Nova Senha
         const errosNovaSenha = validaSenha(novaSenha)
         if (errosNovaSenha.length > 0) {
             res.status(400).json({ erro: errosNovaSenha })
@@ -167,7 +160,6 @@ router.put("/alterar-senha", verificaToken, async (req, res) => {
     }
 })
 
-// RECUPERAR SENHA (POST /recuperar-senha) - Público (Esqueci minha senha)
 router.post("/recuperar-senha", async (req, res) => {
     const valida = recuperaSchema.safeParse(req.body)
     if (!valida.success) { res.status(400).json({ erro: valida.error }); return }
@@ -177,23 +169,19 @@ router.post("/recuperar-senha", async (req, res) => {
     try {
         const atendente = await prisma.atendente.findUnique({ where: { email } })
 
-        // Verifica se atendente existe E se possui pergunta de segurança cadastrada
         if (!atendente || !atendente.respostaSeguranca) {
             res.status(400).json({ erro: "Dados inválidos ou pergunta de segurança não configurada" })
             return
         }
 
-        // Verifica Resposta Secreta (Compara o hash da resposta salva com a enviada em minúsculo)
         if (!bcrypt.compareSync(resposta.toLowerCase(), atendente.respostaSeguranca)) {
             res.status(400).json({ erro: "Resposta de segurança incorreta" })
             return
         }
 
-        // Valida força da nova senha
         const erros = validaSenha(novaSenha)
         if (erros.length > 0) { res.status(400).json({ erro: erros }); return }
 
-        // Atualiza Senha e Zera Bloqueios (caso o usuário estivesse bloqueado por tentativas de login)
         const salt = bcrypt.genSaltSync(12)
         const hash = bcrypt.hashSync(novaSenha, salt)
 

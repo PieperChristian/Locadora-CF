@@ -43,7 +43,6 @@ def veiculos_por_status():
 
         for i, (status, qtd) in enumerate(contagem.items()):
             percentual = (qtd / total_frota) * 100
-            # Cria a barra visual (cada ■ representa aprox. 2%)
             barra_len = int(percentual / 2) 
             cor = CORES[i % len(CORES)]
             barra = f"[{cor}]" + ("■" * barra_len) + f"[/]"
@@ -68,22 +67,19 @@ def veiculos_por_ano():
         veiculos = resposta.json()
         if not veiculos: return
 
-        # Agrupamento
         contagem = {}
         for v in veiculos:
             ano = v["ano"]
             contagem[ano] = contagem.get(ano, 0) + 1
             
-        # Ordena pelos anos (Crescente)
         anos_ordenados = sorted(contagem.keys())
-        max_valor = max(contagem.values()) # Para normalizar a escala do gráfico
+        max_valor = max(contagem.values())
 
         console.print("\n[bold cyan]Ano   | Gráfico[/]")
         console.print("-" * 40)
         
         for i, ano in enumerate(anos_ordenados):
             qtd = contagem[ano]
-            # Normaliza a barra para caber na tela (max 50 chars)
             tamanho_barra = int((qtd / max_valor) * 40)
             cor = CORES[i % len(CORES)]
             barra = "█" * tamanho_barra

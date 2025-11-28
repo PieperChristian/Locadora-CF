@@ -10,7 +10,6 @@ console = Console()
 def locacoes_por_mes():
     titulo("Gráfico: Locações por Mês")
     
-    # Pergunta o ano para filtrar
     ano_atual = datetime.now().year
     ano_filtro = IntPrompt.ask("Informe o Ano para análise", default=ano_atual)
     
@@ -24,24 +23,18 @@ def locacoes_por_mes():
 
         alugueis = resposta.json()
         
-        # Inicializa contador zerado para os 12 meses
-        # {1: 0, 2: 0, ..., 12: 0}
         meses = {i: 0 for i in range(1, 13)}
         
         total_ano = 0
         
         for a in alugueis:
-            # Data vem como "2025-11-28T..."
             data_str = a["dataHoraRetirada"]
-            # Converte para objeto datetime
-            # O replace('Z', '') é para evitar erro em algumas versões do python com timezone
             dt = datetime.fromisoformat(data_str.replace('Z', '+00:00'))
             
             if dt.year == ano_filtro:
                 meses[dt.month] += 1
                 total_ano += 1
 
-        # Renderização (Estilo Vertical Simplificado)
         console.print(f"\n[bold]Volume de Locações em {ano_filtro}:[/]\n")
         
         max_loc = max(meses.values()) if total_ano > 0 else 1
@@ -50,7 +43,6 @@ def locacoes_por_mes():
 
         for i in range(1, 13):
             qtd = meses[i]
-            # Barra proporcional
             tamanho = int((qtd / max_loc) * 50)
             barra = "█" * tamanho
             

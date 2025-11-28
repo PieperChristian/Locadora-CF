@@ -19,14 +19,13 @@ export async function enviarEmailComprovante(
     veiculo: string,
     placa: string,
     dataRetirada: Date,
-    dataDevolucao?: Date | null, // Pode ser nulo se for apenas retirada
+    dataDevolucao?: Date | null,
     tipo: "ALUGUEL" | "DEVOLUCAO"
   }
 ) {
   
   const dataFormatada = (data: Date) => data.toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' });
 
-  // Template HTML simples
   const html = `
     <div style="font-family: Arial, sans-serif; padding: 20px; border: 1px solid #ccc; max-width: 600px;">
       <h2 style="color: #2c3e50;">Locadora CF - Comprovante de ${dados.tipo === 'ALUGUEL' ? 'Retirada' : 'Devolução'}</h2>

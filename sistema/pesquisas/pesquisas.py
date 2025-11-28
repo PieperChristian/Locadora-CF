@@ -19,13 +19,10 @@ def pesquisar_veiculos_avancada():
     # 2. Coleta de Status (Validado manualmente para aceitar minúsculas e erro em PT-BR)
     filtro_status = ""
     while True:
-        # Removemos o 'choices' do Prompt para não travar com erro em inglês
         entrada_status = Prompt.ask("Status (Disponível, Alugado, Em Reparo)", default="")
         
-        # Normalização: Remove espaços e converte para MAIÚSCULO
         entrada_normalizada = entrada_status.strip().upper()
         
-        # Lista de status válidos no banco (Schema Prisma)
         status_validos = ["", "DISPONIVEL", "ALUGADO", "EM_REPARO"]
         
         if entrada_normalizada in status_validos:
@@ -55,12 +52,10 @@ def pesquisar_veiculos_avancada():
             match_modelo = True
             match_status = True
             
-            # Filtro Modelo (Case Insensitive)
             if filtro_modelo:
                 if filtro_modelo.lower() not in v["modelo"].lower():
                     match_modelo = False
             
-            # Filtro Status (Comparação exata após normalização)
             if filtro_status:
                 if v["status"] != filtro_status:
                     match_status = False
@@ -81,7 +76,6 @@ def pesquisar_veiculos_avancada():
             tabela.add_column("Status", justify="center")
             
             for v in resultados:
-                # Formatação de cor
                 s = v['status']
                 if s == "DISPONIVEL": cor = "green"
                 elif s == "ALUGADO": cor = "red"
@@ -110,12 +104,10 @@ def pesquisar_locacoes_periodo():
         data_ini_str = Prompt.ask("Data Inicial")
         data_fim_str = Prompt.ask("Data Final")
         
-        # Validação básica de formato
         dt_ini = datetime.fromisoformat(data_ini_str)
         dt_fim = datetime.fromisoformat(data_fim_str)
         
         with console.status("[bold blue]Buscando locações...[/]"):
-            # Buscamos tudo e filtramos localmente (Padrão do projeto de referência)
             resposta = requests.get(
                 f"{sessao.BASE_URL}/alugueis",
                 headers=sessao.get_headers()
@@ -129,7 +121,6 @@ def pesquisar_locacoes_periodo():
         resultados = []
 
         for a in todos_alugueis:
-            # A data vem como ISO (Ex: 2025-11-28T14:00:00.000Z). Pegamos só a parte da data.
             data_locacao_str = a["dataHoraRetirada"].split("T")[0]
             dt_locacao = datetime.fromisoformat(data_locacao_str)
             
@@ -149,7 +140,6 @@ def pesquisar_locacoes_periodo():
             for res in resultados:
                 data_fmt = datetime.fromisoformat(res["dataHoraRetirada"].split("T")[0]).strftime("%d/%m/%Y")
                 
-                # Tratamento seguro de dados aninhados
                 cliente = res.get("cliente", {}).get("nome", "Desconhecido")
                 veiculo = res.get("veiculo", {}).get("modelo", "Desconhecido")
                 

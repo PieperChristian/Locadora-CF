@@ -15,7 +15,6 @@ const aluguelSchema = z.object({
     veiculoId: z.number().int().positive()
 })
 
-// ... (Rota GET permanece igual) ...
 router.get("/", async (req, res) => {
     try {
         const alugueis = await prisma.aluguel.findMany({
@@ -32,7 +31,6 @@ router.get("/", async (req, res) => {
     }
 })
 
-// === REALIZAR ALUGUEL (C) ===
 router.post("/", async (req, res) => {
     const valida = aluguelSchema.safeParse(req.body)
     if (!valida.success) {
@@ -51,7 +49,6 @@ router.post("/", async (req, res) => {
         if (!veiculo) { res.status(400).json({ erro: "Veículo não encontrado." }); return }
         if (veiculo.status !== 'DISPONIVEL') { res.status(400).json({ erro: "Veículo indisponível." }); return }
 
-        // Transação
         const [aluguel, veiculoAtualizado] = await prisma.$transaction([
             prisma.aluguel.create({
                 data: { clienteId, veiculoId, atendenteId }
@@ -62,10 +59,8 @@ router.post("/", async (req, res) => {
             })
         ])
 
-        // === AÇÕES PÓS-TRANSAÇÃO (Log e Email) ===
         await registrarLog(atendenteId, `Realizou aluguel do veículo ${veiculo.placa} para o cliente ${cliente.nome}`)
 
-        // Não usamos await aqui para não travar a resposta da API (Fire and Forget)
         enviarEmailComprovante(cliente.email, "Confirmação de Aluguel", {
             cliente: cliente.nome,
             veiculo: `${veiculo.modelo} - ${veiculo.cor}`,
@@ -82,7 +77,6 @@ router.post("/", async (req, res) => {
     }
 })
 
-// === REGISTRAR DEVOLUÇÃO (U) ===
 router.put("/devolucao/:id", async (req, res) => {
     const { id } = req.params
     const atendenteId = req.userLogadoId as number
@@ -128,9 +122,7 @@ router.put("/devolucao/:id", async (req, res) => {
     }
 })
 
-// ... (Rota DELETE permanece igual) ...
 router.delete("/:id", async (req, res) => {
-    // ... manter código anterior
     const { id } = req.params
     try {
         const aluguelParaExcluir = await prisma.aluguel.findUnique({ where: { id: Number(id) } })

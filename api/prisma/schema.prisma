@@ -44,11 +44,10 @@ model Atendente {
   alugueis          Aluguel[]
   logs              Log[]
 
-  // === NOVO: Segurança Avançada ===
   tentativasLogin   Int       @default(0)
   bloqueadoAte      DateTime?
   perguntaSeguranca String?   @db.VarChar(100)
-  respostaSeguranca String?   @db.VarChar(60) // Será hash
+  respostaSeguranca String?   @db.VarChar(60)
 
   @@map("atendentes")
 }

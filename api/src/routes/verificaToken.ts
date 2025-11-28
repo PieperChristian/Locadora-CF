@@ -6,7 +6,6 @@ interface TokenInterface {
     userLogadoNome: string
 }
 
-// Extensão da tipagem do Express para incluir os dados do usuário logado
 declare global {
     namespace Express {
         interface Request {
@@ -24,7 +23,6 @@ export function verificaToken(req: Request, res: Response, next: NextFunction) {
         return
     }
 
-    // O padrão é "Bearer <TOKEN>", então pegamos a segunda parte
     const token = authorization.split(" ")[1]
 
     try {

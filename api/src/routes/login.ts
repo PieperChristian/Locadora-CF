@@ -9,7 +9,7 @@ const router = Router()
 
 router.post("/", async (req, res) => {
     const { email, senha } = req.body
-    const mensaPadrao = "Login ou senha incorretos" // Mensagem genérica por segurança
+    const mensaPadrao = "Login ou senha incorretos"
 
     if (!email || !senha) {
         res.status(400).json({ erro: mensaPadrao })

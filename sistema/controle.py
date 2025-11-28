@@ -1,5 +1,5 @@
 import sys
-import os  # <--- Importante para o encerramento forçado
+import os 
 from rich.console import Console
 from rich.panel import Panel
 from funcoes.gerais import titulo
@@ -11,8 +11,8 @@ from cadastros.clientes import incluir_cliente, alterar_cliente, excluir_cliente
 from cadastros.veiculos import incluir_veiculo, alterar_veiculo, excluir_veiculo, listar_veiculos
 from locacoes.alugueis import realizar_aluguel, realizar_devolucao, listar_alugueis
 from pesquisas.pesquisas import pesquisar_veiculos_avancada
-from pesquisas.pesquisas import pesquisar_veiculos_avancada, pesquisar_locacoes_periodo # <--- Adicionado
-from utilitarios.admin import trocar_senha, fazer_backup # <--- Novo Import
+from pesquisas.pesquisas import pesquisar_veiculos_avancada, pesquisar_locacoes_periodo 
+from utilitarios.admin import trocar_senha, fazer_backup, fazer_backup_csv
 from graficos.graf_veiculos import veiculos_por_status, veiculos_por_ano
 from graficos.graf_locacoes import locacoes_por_mes
 
@@ -21,7 +21,7 @@ console = Console()
 if __name__ == "__main__":
     # 1. Autenticação
     if not realizar_login():
-        os._exit(0) # Encerra se login falhar
+        os._exit(0)
 
     # 2. Loop Principal
     while True:
@@ -38,7 +38,6 @@ if __name__ == "__main__":
             border_style="bold blue"
         ))
         
-        # .strip() remove espaços que podem causar erro na leitura
         opcao = console.input("[bold cyan]Opção: [/]").strip()
 
         # === 1. CLIENTES ===
@@ -64,7 +63,7 @@ if __name__ == "__main__":
             console.print("[2] Alterar Veículo")
             console.print("[3] Excluir Veículo")
             console.print("[4] Listar Veículos (Geral)")
-            console.print("[5] Pesquisa Avançada (Filtros)") # <--- NOVO
+            console.print("[5] Pesquisa Avançada (Filtros)")
             console.print("[6] Retornar ao Menu")
 
             sub_opcao = console.input("[bold cyan]Opção: [/]").strip()
@@ -73,7 +72,7 @@ if __name__ == "__main__":
             elif sub_opcao == "2": alterar_veiculo()
             elif sub_opcao == "3": excluir_veiculo()
             elif sub_opcao == "4": listar_veiculos()
-            elif sub_opcao == "5": pesquisar_veiculos_avancada() # <--- CHAMADA
+            elif sub_opcao == "5": pesquisar_veiculos_avancada()
             
         # === 3. LOCAÇÕES ===
         elif opcao == "3":
@@ -81,7 +80,7 @@ if __name__ == "__main__":
             console.print("[1] Realizar Aluguel (Retirada)")
             console.print("[2] Registrar Devolução")
             console.print("[3] Listar Locações (Geral)")
-            console.print("[4] Pesquisar por Período") # <--- NOVO
+            console.print("[4] Pesquisar por Período")
             console.print("[5] Retornar ao Menu")
             
             sub_opcao = console.input("[bold cyan]Opção: [/]").strip()
@@ -89,38 +88,40 @@ if __name__ == "__main__":
             if sub_opcao == "1": realizar_aluguel()
             elif sub_opcao == "2": realizar_devolucao()
             elif sub_opcao == "3": listar_alugueis()
-            elif sub_opcao == "4": pesquisar_locacoes_periodo() # <--- CHAMADA
+            elif sub_opcao == "4": pesquisar_locacoes_periodo()
 
         # === 4. GRÁFICOS (Futuro) ===
         elif opcao == "4":
             titulo("Gráficos Gerenciais")
             console.print("[1] Frota por Status (Pizza/Barras)")
             console.print("[2] Frota por Ano (Cronologia)")
-            console.print("[3] Locações por Mês (Evolução)") # <--- NOVO
+            console.print("[3] Locações por Mês (Evolução)")
             console.print("[4] Retornar")
 
             sub_opcao = console.input("[bold cyan]Opção: [/]").strip()
 
             if sub_opcao == "1": veiculos_por_status()
             elif sub_opcao == "2": veiculos_por_ano()
-            elif sub_opcao == "3": locacoes_por_mes() # <--- CHAMADA
+            elif sub_opcao == "3": locacoes_por_mes()
 
         # === 5. UTILITÁRIOS (Futuro) ===
         elif opcao == "5":
             titulo("Utilitários do Sistema")
-            console.print("[1] Fazer Backup dos Dados")
-            console.print("[2] Alterar Minha Senha")
-            console.print("[3] Retornar ao Menu")
-            
+            console.print("[1] Fazer Backup Completo (JSON)")
+            console.print("[2] Exportar Dados para Excel (CSV)")
+            console.print("[3] Alterar Minha Senha")
+            console.print("[4] Retornar ao Menu")
+
             sub_opcao = console.input("[bold cyan]Opção: [/]").strip()
-            
-            if sub_opcao == "1": fazer_backup() # <--- CHAMADA
-            elif sub_opcao == "2": trocar_senha() # <--- CHAMADA
+
+            if sub_opcao == "1": fazer_backup()
+            elif sub_opcao == "2": fazer_backup_csv()
+            elif sub_opcao == "3": trocar_senha()
 
         # === 0. SAIR ===
         elif opcao == "0":
             console.print("\n[green]Sistema finalizado com sucesso. Até logo![/]")
-            os._exit(0) # <--- Encerramento Forçado e Definitivo
+            os._exit(0)
         
         else:
             console.print("[red]Opção inválida![/]")

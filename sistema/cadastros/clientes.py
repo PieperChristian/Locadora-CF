@@ -8,27 +8,18 @@ import funcoes.sessao as sessao
 
 console = Console()
 
-# === FUNÇÕES AUXILIARES DE VALIDAÇÃO ===
-
 def validar_cpf(cpf):
-    # Regex para formato 000.000.000-00
     return re.match(r'^\d{3}\.\d{3}\.\d{3}-\d{2}$', cpf)
 
 def validar_email(email):
-    # Regex simples de e-mail
     return re.match(r'^[\w\.-]+@[\w\.-]+\.\w+$', email)
 
 def ler_input_validado(texto, validador_func, mensagem_erro):
-    """
-    Mantém o usuário no prompt até que o valor seja válido.
-    """
     while True:
         valor = Prompt.ask(texto)
         if validador_func(valor):
             return valor
         console.print(f"[bold red]⚠ {mensagem_erro}[/]")
-
-# =======================================
 
 def incluir_cliente():
     titulo("Inclusão de Novo Cliente")
@@ -91,7 +82,6 @@ def incluir_cliente():
             console.print(f"\n[bold green]✅ Cliente cadastrado com sucesso![/]")
             console.print(f"ID: [cyan]{cliente['id']}[/] - Nome: [cyan]{cliente['nome']}[/]")
         else:
-            # Tratamento de erro da API (ex: Duplicidade)
             erro = resposta.json().get("erro", "Erro desconhecido")
             console.print(f"\n[bold red]✖ Erro ao cadastrar na API:[/] {erro}")
 
@@ -155,7 +145,6 @@ def alterar_cliente():
     try:
         id_cliente = Prompt.ask("Informe o [bold yellow]ID do Cliente[/] que deseja alterar")
 
-        # Busca dados atuais
         resposta = requests.get(
             f"{sessao.BASE_URL}/clientes", 
             headers=sessao.get_headers()
@@ -171,7 +160,6 @@ def alterar_cliente():
 
         console.print(f"\n[italic]Pressione Enter para manter o valor atual ({cliente_atual['nome']})[/]")
         
-        # Aqui usamos validação simples no Prompt.ask (se vazio, usa default)
         nome = Prompt.ask("Nome", default=cliente_atual["nome"])
         cpf = Prompt.ask("CPF", default=cliente_atual["cpf"])
         email = Prompt.ask("E-mail", default=cliente_atual["email"])

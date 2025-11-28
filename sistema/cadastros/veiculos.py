@@ -8,11 +8,9 @@ import funcoes.sessao as sessao
 
 console = Console()
 
-# === VALIDAÇÕES ===
 def validar_placa(placa):
     return len(placa) == 7 and placa.isalnum()
 
-# ==================
 
 def incluir_veiculo():
     titulo("Inclusão de Novo Veículo")
@@ -44,7 +42,7 @@ def incluir_veiculo():
             "modelo": modelo,
             "cor": cor,
             "ano": ano,
-            "status": "DISPONIVEL" # Padrão na criação
+            "status": "DISPONIVEL"
         }
 
         with console.status("[bold green]Salvando veículo...[/]"):
@@ -98,7 +96,6 @@ def listar_veiculos():
         tabela.add_column("Status", justify="center")
 
         for v in veiculos:
-            # Lógica de Cores para o Status
             status_fmt = v["status"]
             if v["status"] == "DISPONIVEL":
                 status_fmt = f"[green]{v['status']}[/]"
@@ -127,13 +124,7 @@ def alterar_veiculo():
     titulo("Manutenção de Veículo")
 
     try:
-        # Busca veiculo para editar
         id_veiculo = Prompt.ask("Informe o [bold yellow]ID do Veículo[/]")
-        
-        # Como não temos GET /veiculos/:id no backend (opcional), filtramos da lista
-        # Otimização: Se sua base for gigante, implemente o GET por ID no backend.
-        # Para este trabalho, listar e filtrar localmente é aceitável, mas faremos
-        # o GET geral para garantir dados frescos.
         resp_get = requests.get(f"{sessao.BASE_URL}/veiculos", headers=sessao.get_headers())
         veiculos = resp_get.json()
         veiculo_atual = next((v for v in veiculos if str(v["id"]) == id_veiculo), None)
@@ -151,11 +142,9 @@ def alterar_veiculo():
         cor = Prompt.ask("Cor", default=veiculo_atual["cor"])
         ano = IntPrompt.ask("Ano", default=veiculo_atual["ano"])
 
-        # Seleção de Status
         console.print("\n[bold]Selecione o Status:[/]")
         console.print("1. DISPONIVEL")
         console.print("2. EM_REPARO")
-        # Não permitimos forçar "ALUGADO" manualmente aqui para não quebrar a integridade do módulo de aluguel
         
         status_atual = veiculo_atual["status"]
         if status_atual == "ALUGADO":
