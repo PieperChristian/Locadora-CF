@@ -125,33 +125,39 @@ Para facilitar os testes, configure uma variável de ambiente no seu cliente HTT
 ### Lista de Endpoints (Copiar e Colar)
 
 **Autenticação**
+
 - `POST {{base_url}}/login`
 
 **Atendentes**
+
 - `GET {{base_url}}/atendentes`
 - `POST {{base_url}}/atendentes`
 - `PUT {{base_url}}/atendentes/alterar-senha`
 - `POST {{base_url}}/atendentes/recuperar-senha`
 
 **Veículos**
+
 - `GET {{base_url}}/veiculos`
 - `POST {{base_url}}/veiculos`
 - `PUT {{base_url}}/veiculos/1` (Substitua '1' pelo ID desejado)
 - `DELETE {{base_url}}/veiculos/1`
 
 **Clientes**
+
 - `GET {{base_url}}/clientes`
 - `POST {{base_url}}/clientes`
 - `PUT {{base_url}}/clientes/1`
 - `DELETE {{base_url}}/clientes/1`
 
 **Aluguéis**
+
 - `GET {{base_url}}/alugueis`
 - `POST {{base_url}}/alugueis`
 - `PUT {{base_url}}/alugueis/devolucao/1`
 - `DELETE {{base_url}}/alugueis/1`
 
 **Sistema**
+
 - `GET {{base_url}}/sistema/backup`
 - `POST {{base_url}}/sistema/restore`
 - `GET {{base_url}}/sistema/logs`

@@ -12,7 +12,7 @@ from cadastros.veiculos import incluir_veiculo, alterar_veiculo, excluir_veiculo
 from locacoes.alugueis import realizar_aluguel, realizar_devolucao, listar_alugueis
 from pesquisas.pesquisas import pesquisar_veiculos_avancada
 from pesquisas.pesquisas import pesquisar_veiculos_avancada, pesquisar_locacoes_periodo 
-from utilitarios.admin import trocar_senha, fazer_backup, fazer_backup_csv
+from utilitarios.admin import trocar_senha, fazer_backup, fazer_backup_csv, visualizar_logs
 from graficos.graf_veiculos import veiculos_por_status, veiculos_por_ano
 from graficos.graf_locacoes import locacoes_por_mes
 
@@ -109,14 +109,16 @@ if __name__ == "__main__":
             titulo("Utilitários do Sistema")
             console.print("[1] Fazer Backup Completo (JSON)")
             console.print("[2] Exportar Dados para Excel (CSV)")
-            console.print("[3] Alterar Minha Senha")
-            console.print("[4] Retornar ao Menu")
+            console.print("[3] Visualizar Logs de Auditoria") # <--- NOVO
+            console.print("[4] Alterar Minha Senha")
+            console.print("[5] Retornar ao Menu")
 
             sub_opcao = console.input("[bold cyan]Opção: [/]").strip()
 
             if sub_opcao == "1": fazer_backup()
             elif sub_opcao == "2": fazer_backup_csv()
-            elif sub_opcao == "3": trocar_senha()
+            elif sub_opcao == "3": visualizar_logs()
+            elif sub_opcao == "4": trocar_senha()
 
         # === 0. SAIR ===
         elif opcao == "0":

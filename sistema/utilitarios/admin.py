@@ -6,6 +6,7 @@ import pwinput
 from datetime import datetime
 from rich.console import Console
 from rich.prompt import Prompt
+from rich.table import Table
 from funcoes.gerais import titulo
 import funcoes.sessao as sessao
 
@@ -159,5 +160,53 @@ def fazer_backup_csv():
 
     except Exception as e:
         console.print(f"\n[bold red]✖ Erro:[/] {e}")
+
+    input("\nPressione Enter para continuar...")
+
+def visualizar_logs():
+    titulo("Auditoria e Logs do Sistema")
+    
+    try:
+        with console.status("[bold blue]Buscando registros de auditoria...[/]"):
+            resposta = requests.get(
+                f"{sessao.BASE_URL}/sistema/logs",
+                headers=sessao.get_headers()
+            )
+
+        if resposta.status_code != 200:
+            console.print(f"[red]Erro ao buscar logs: {resposta.text}[/]")
+            input()
+            return
+
+        logs = resposta.json()
+        
+        if not logs:
+            console.print("[yellow]Nenhum log registrado.[/]")
+        else:
+            tabela = Table(show_header=True, header_style="bold magenta")
+            tabela.add_column("ID", style="dim", width=4)
+            tabela.add_column("Data/Hora", style="cyan", justify="center")
+            tabela.add_column("Atendente", style="green")
+            tabela.add_column("Atividade", style="white")
+
+            for log in logs:
+                # Formata data ISO para BR
+                data_iso = log["data"]
+                data_fmt = datetime.fromisoformat(data_iso.replace('Z', '+00:00')).strftime("%d/%m/%Y %H:%M")
+                
+                nome_atendente = log["atendente"]["nome"] if log.get("atendente") else "Desconhecido"
+                
+                tabela.add_row(
+                    str(log["id"]),
+                    data_fmt,
+                    nome_atendente,
+                    log["atividade"]
+                )
+            
+            console.print(tabela)
+            console.print(f"\n[dim]Exibindo os últimos {len(logs)} registros.[/]")
+
+    except Exception as e:
+        console.print(f"\n[bold red]✖ Erro de conexão:[/] {e}")
 
     input("\nPressione Enter para continuar...")

@@ -67,4 +67,21 @@ router.post("/restore", async (req, res) => {
     }
 })
 
+router.get("/logs", async (req, res) => {
+    try {
+        const logs = await prisma.log.findMany({
+            take: 50,
+            orderBy: { data: 'desc' },
+            include: {
+                atendente: {
+                    select: { nome: true }
+                }
+            }
+        })
+        res.status(200).json(logs)
+    } catch (error) {
+        res.status(500).json({ erro: "Erro ao buscar logs: " + error })
+    }
+})
+
 export default router
